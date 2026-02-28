@@ -14,7 +14,94 @@ app-iris-ct/
 │   └── training_history.json    ← registro de versiones
 └── README.md
 ```
+# LAB 3 – Continuous Training API (Iris)
 
+## Descripción
+
+En este laboratorio se implementa una API basada en FastAPI que permite:
+
+- Servir predicciones sobre el dataset Iris
+- Reentrenar el modelo con nuevas muestras etiquetadas
+- Registrar el historial completo de versiones
+- Activar o rechazar modelos automáticamente según su accuracy
+
+El sistema implementa un mecanismo de control (gate) que solo activa un nuevo modelo si su accuracy es mayor o igual que la del modelo activo anterior.
+
+---
+
+## Ejercicio 2 – Análisis del historial de entrenamiento
+
+Tras ejecutar la demo y realizar entrenamientos adicionales, el archivo `training_history.json` contiene múltiples versiones del modelo.
+
+Se verificó que:
+
+- Existen al menos 4 versiones registradas.
+- Existen al menos 2 modelos rechazados.
+- Cada entrenamiento queda registrado independientemente de si se activa o no.
+
+El sistema demuestra trazabilidad completa del ciclo de vida del modelo, incluyendo:
+
+- Versión
+- Fecha de entrenamiento
+- Accuracy
+- Número de muestras
+- Estado (activado / rechazado)
+
+Esto garantiza control y auditabilidad del proceso de continuous training.
+
+---
+
+## Ejercicio 3 – Comparación retrain_from_scratch
+
+Se realizaron dos llamadas al endpoint `/train` utilizando exactamente las mismas 10 muestras correctamente etiquetadas.
+
+### Caso A – retrain_from_scratch = false
+
+- Se acumuló el histórico previo.
+- Accuracy obtenida: 1.0
+- Modelo activado.
+
+### Caso B – retrain_from_scratch = true
+
+- Se entrenó únicamente con las 10 muestras enviadas.
+- Accuracy obtenida: 1.0
+- Modelo activado.
+
+### Análisis
+
+En esta ejecución concreta no se observaron diferencias en rendimiento debido a que las muestras eran coherentes y correctamente etiquetadas.
+
+Conceptualmente:
+
+- `false` proporciona mayor estabilidad al aprovechar datos históricos acumulados.
+- `true` permite descartar datos antiguos potencialmente corruptos.
+
+Esto demuestra que la API permite tanto aprendizaje incremental como reentrenamiento completo bajo control de calidad basado en métricas.
+
+---
+
+## Tecnologías utilizadas
+
+- FastAPI
+- Scikit-learn
+- Uvicorn
+- Python 3.12
+
+---
+
+## Ejecución
+
+Activar entorno virtual:
+
+    source .venv/bin/activate
+
+Lanzar servidor:
+
+    uvicorn main:app --reload
+
+Documentación Swagger:
+
+    http://127.0.0.1:8000/docs
 ---
 
 ## Endpoints
