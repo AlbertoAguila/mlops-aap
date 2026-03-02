@@ -14,7 +14,7 @@ import time
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Literal
 
 import joblib
 import numpy as np
@@ -22,7 +22,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import train_test_split
 
 # ---------------------------------------------------------------------------
@@ -53,7 +53,19 @@ class LabeledSample(BaseModel):
     petal_width: float  = Field(..., example=0.2)
     label: int = Field(..., ge=0, le=2, example=0,
                        description="0=setosa, 1=versicolor, 2=virginica")
-
+class PolicyConfig(BaseModel):
+    mode: Literal["any_improvement", "min_delta", "per_class_f1"] = "any_improvement"
+    min_delta: float = Field(
+        0.02,
+        ge=0.0,
+        description="Mejora mínima relativa (solo para min_delta)"
+    )
+    class_label: int = Field(
+        1,
+        ge=0,
+        le=2,
+        description="Clase objetivo (solo para per_class_f1)"
+    )
 
 class TrainRequest(BaseModel):
     samples: List[LabeledSample] = Field(
@@ -64,7 +76,10 @@ class TrainRequest(BaseModel):
         False,
         description="Si True, ignora datos anteriores y entrena solo con las muestras enviadas"
     )
-
+    policy: Optional[PolicyConfig] = Field(
+        default=None,
+        description="Política de activación del modelo (opcional)"
+    )
 
 class PredictResponse(BaseModel):
     prediction: int
@@ -111,7 +126,11 @@ def save_history(history: List[dict]):
 
 def get_active_model_meta() -> Optional[dict]:
     history = load_history()
-    return history[-1] if history else None
+    if not history:
+        return None
+    active_entries = [h for h in history if h.get("activated", True)]
+    return active_entries[-1] if active_entries else history[0]
+
 
 
 # ---------------------------------------------------------------------------
@@ -267,9 +286,46 @@ def train(request: TrainRequest):
         eval_note = "evaluación en train (dataset pequeño, < 20 muestras)"
 
     accuracy_new = round(accuracy_new, 4)
+    # Calcular F1 por clase
+    if len(X_train) >= 20:
+        y_pred = clf_new.predict(X_val)
+        f1_new = f1_score(y_val, y_pred, average=None).round(4).tolist()
+    else:
+        y_pred = clf_new.predict(X_train)
+        f1_new = f1_score(y_train, y_pred, average=None).round(4).tolist()
 
     # 6. Decidir si activar el nuevo modelo
-    model_updated = (previous_accuracy is None) or (accuracy_new >= previous_accuracy)
+        policy = request.policy or PolicyConfig()
+    decision_reason = ""
+
+    if previous_accuracy is None:
+        model_updated = True
+        decision_reason = "Primer modelo: activado automáticamente"
+    else:
+        if policy.mode == "any_improvement":
+            model_updated = accuracy_new >= previous_accuracy
+            decision_reason = f"any_improvement: {accuracy_new:.4f} >= {previous_accuracy:.4f}"
+
+        elif policy.mode == "min_delta":
+            required = previous_accuracy * (1.0 + policy.min_delta)
+            model_updated = accuracy_new >= required
+            decision_reason = f"min_delta: {accuracy_new:.4f} >= {required:.4f}"
+
+        elif policy.mode == "per_class_f1":
+            prev_meta = get_active_model_meta()
+            previous_f1 = prev_meta.get("f1_per_class") if prev_meta else None
+
+            if not previous_f1:
+                model_updated = accuracy_new >= previous_accuracy
+                decision_reason = "per_class_f1 sin F1 previa, fallback a accuracy"
+            else:
+                prev_cls = float(previous_f1[policy.class_label])
+                new_cls = float(f1_new[policy.class_label])
+                model_updated = new_cls > prev_cls
+                decision_reason = f"per_class_f1: {new_cls:.4f} > {prev_cls:.4f}"
+
+        else:
+            raise HTTPException(status_code=422, detail="policy.mode no reconocido")
 
     version = f"v{len(history) + 1}.0-{uuid.uuid4().hex[:6]}"
     status = "activado" if model_updated else "rechazado"
@@ -292,6 +348,9 @@ def train(request: TrainRequest):
         "version": version,
         "trained_at": datetime.utcnow().isoformat() + "Z",
         "accuracy": accuracy_new,
+        "f1_per_class": f1_new,
+        "policy": policy.model_dump(),
+        "decision_reason": decision_reason,
         "n_training_samples": len(X_train),
         "algorithm": "LogisticRegression",
         "source": source,
