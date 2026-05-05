@@ -1,0 +1,5 @@
+gradio==4.44.1
+huggingface-hub>=0.19.3,<0.30.0
+fastapi<0.116.0
+starlette<0.42.0
+requests
