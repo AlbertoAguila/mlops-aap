@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / cloud sync junk
+Thumbs.db
+desktop.ini
+
+# Outputs de depuración (no forman parte del entregable)
+entrega/docs/_debug_*.json
+
+# uv / pip
+.uv-cache/
+*.egg-info/

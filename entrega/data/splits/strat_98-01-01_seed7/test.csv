@@ -1,0 +1,10 @@
+Survived,Pclass,Sex,Age,SibSp,Parch,Fare,Embarked
+0,1,male,,0,0,0.0,S
+1,1,female,32.0,0,0,76.2917,C
+0,3,male,47.0,0,0,9.0,S
+1,1,male,,0,0,30.5,S
+0,3,male,44.0,0,0,8.05,S
+1,1,female,30.0,0,0,86.5,S
+1,2,female,6.0,0,1,33.0,S
+0,3,male,19.0,0,0,7.8958,S
+0,3,male,26.0,0,0,7.8958,S
