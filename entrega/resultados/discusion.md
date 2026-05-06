@@ -23,7 +23,7 @@ Los reports y la tabla cruda están en:
 
 - `entrega/reports/<case_id>__val.html`
 - `entrega/reports/<case_id>__test.html`
-- `entrega/docs/summary.csv`, `summary_table.md` y `summary_full.json`
+- `entrega/resultados/summary.csv`, `summary_table.md` y `summary_full.json`
 
 donde `<case_id> = <strat|nostrat>_<ratio>_seed<seed>`.
 

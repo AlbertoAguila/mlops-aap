@@ -11,7 +11,7 @@ entrega/
 ├── reports/
 │   └── <case_id>__val.html         # 12 reports val + 12 reports test = 24 HTML
 │   └── <case_id>__test.html
-└── docs/
+└── resultados/
     ├── summary.csv                 # tabla cruda con todos los campos
     ├── summary_table.md            # tabla resumen lista para pegar
     ├── summary_full.json           # detalle drift por columna en cada caso
@@ -33,7 +33,7 @@ El script:
 2. Recorre las 12 condiciones experimentales (2 estratificación × 3 ratios × 2 semillas).
 3. Para cada caso divide en train/val/test, escribe los CSV de splits y dos
    reports HTML de Evidently (val vs train, test vs train).
-4. Construye `docs/summary.csv` y `docs/summary_table.md` con la fracción de
+4. Construye `resultados/summary.csv` y `resultados/summary_table.md` con la fracción de
    columnas con drift por caso.
 
 ## Convención de nombres
@@ -54,8 +54,8 @@ Ejemplos:
 
 ## Tras ejecutar el script
 
-1. Abre `docs/summary_table.md` y copia el contenido.
-2. Pega esa tabla en `docs/discusion.md` reemplazando el bloque entre
+1. Abre `resultados/summary_table.md` y copia el contenido.
+2. Pega esa tabla en `resultados/discusion.md` reemplazando el bloque entre
    `<!-- BEGIN summary_table.md -->` y `<!-- END summary_table.md -->`.
 3. Los 24 HTML quedan en `reports/`, listos para subir a Moodle junto al
    resto de la entrega.

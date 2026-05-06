@@ -32,7 +32,7 @@ PROJECT_ROOT = HERE.parent                  # .../lab A/entrega
 LAB_ROOT = PROJECT_ROOT.parent              # .../lab A
 DATA_PATH = LAB_ROOT / "titanic-dataset.csv"
 REPORTS_DIR = PROJECT_ROOT / "reports"
-DOCS_DIR = PROJECT_ROOT / "docs"
+DOCS_DIR = PROJECT_ROOT / "resultados"
 SPLITS_DIR = PROJECT_ROOT / "data" / "splits"
 
 for d in (REPORTS_DIR, DOCS_DIR, SPLITS_DIR):

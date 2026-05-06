@@ -24,7 +24,7 @@ Thumbs.db
 desktop.ini
 
 # Outputs de depuración (no forman parte del entregable)
-entrega/docs/_debug_*.json
+entrega/resultados/_debug_*.json
 
 # uv / pip
 .uv-cache/
