@@ -15,7 +15,6 @@ TITANIC_URL = (
     "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
 )
 PROJECT = os.getenv("WANDB_PROJECT", "titanic-mlops")
-ENTITY = os.getenv("WANDB_ENTITY") or None
 ARTIFACT_NAME = "titanic-raw"
 
 
@@ -29,7 +28,7 @@ def main() -> None:
     wandb.login(key=os.getenv("WANDB_API_KEY"))
     with wandb.init(
         project=PROJECT,
-        entity=ENTITY,
+        entity=os.getenv("WANDB_ENTITY"),
         job_type="upload-dataset",
         dir=tempfile.gettempdir(),
     ) as run:

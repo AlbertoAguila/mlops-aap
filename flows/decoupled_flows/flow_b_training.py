@@ -46,7 +46,7 @@ def training_pipeline() -> None:
     wandb.login(key=os.getenv("WANDB_API_KEY"))
     with wandb.init(
         project=os.getenv("WANDB_PROJECT", config["project"]),
-        entity=os.getenv("WANDB_ENTITY") or config.get("entity"),
+        entity=os.getenv("WANDB_ENTITY"),
         job_type=config["train_job_type"],
         tags=config["tags_training"],
         config=config,
