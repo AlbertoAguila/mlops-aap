@@ -1,0 +1,9 @@
+prefect>=3.6.9
+wandb>=0.25.1
+scikit-learn>=1.6.1
+pandas>=2.2.3
+numpy>=1.26.0
+joblib>=1.4.2
+python-dotenv>=1.2.1
+PyYAML>=6.0.1
+requests>=2.31.0
