@@ -1,0 +1,7 @@
+{
+  "target": "Species",
+  "features": ["SepalLengthCm", "SepalWidthCm", "PetalLengthCm", "PetalWidthCm", "PetalAreacm2", "SepalAreacm2"],
+  "test_size": 0.3,
+  "random_state": 923462739,
+  "n_neighbors": 2
+}

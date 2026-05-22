@@ -1,0 +1,8 @@
+{
+  "training": {
+    "image_name": "albertoaguila/runpod-training-iris:latest"
+  },
+  "predict": {
+    "image_name": "albertoaguila/runpod-predict-iris:latest"
+  }
+}
