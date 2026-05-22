@@ -1,0 +1,63 @@
+project: "titanic-mlops"
+entity: null          # overridden by WANDB_ENTITY env var
+process_job_type: "data-processing"
+train_job_type: "model-training"
+tags_data:
+  - "decoupled"
+  - "data"
+  - "titanic"
+tags_training:
+  - "decoupled"
+  - "training"
+  - "knn"
+  - "titanic"
+
+# ── W&B artifact references ───────────────────────────────────────
+raw_artifact_name: "titanic-raw"
+raw_artifact_version: "latest"
+raw_filename: "titanic.csv"
+
+processed_artifact_name: "titanic-processed"
+processed_artifact_type: "dataset"
+processed_artifact_version: "latest"
+processed_filename: "titanic_processed.csv"
+
+model_artifact_name: "titanic-knn"
+model_artifact_type: "model"
+
+# ── Cleaning (C1–C4) ─────────────────────────────────────────────
+drop_columns:
+  - "PassengerId"
+  - "Name"
+  - "Ticket"
+  - "Cabin"
+
+# ── Feature Engineering (FE1–FE4 encoding; FE5 scaling below) ────
+features:
+  - "Pclass"
+  - "Sex"
+  - "Age"
+  - "SibSp"
+  - "Parch"
+  - "Fare"
+  - "FamilySize"
+  - "IsAlone"
+  - "Embarked_Q"
+  - "Embarked_S"
+
+scale_features:          # FE5: StandardScaler, fitted on X_train only
+  - "Age"
+  - "Fare"
+  - "Pclass"
+  - "SibSp"
+  - "Parch"
+  - "FamilySize"
+
+target: "Survived"
+
+# ── Model hyperparameters ─────────────────────────────────────────
+n_neighbors: 5
+test_size: 0.2
+random_state: 42
+metric: "minkowski"
+weights: "uniform"
