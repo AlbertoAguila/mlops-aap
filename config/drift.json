@@ -1,0 +1,15 @@
+{
+  "reference_artifact_version": "v0",
+  "drift_threshold": 0.05,
+  "drift_job_type": "Drift Detection",
+  "drift_artifact_name": "drift_report",
+  "drift_artifact_type": "drift",
+  "features": [
+    "SepalLengthCm",
+    "SepalWidthCm",
+    "PetalLengthCm",
+    "PetalWidthCm",
+    "PetalAreacm2",
+    "SepalAreacm2"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "entity": "albertoa",
+  "project": "mlops-aap",
+  "train_job_type": "Model Train",
+  "processed_artifact_name": "processed_data",
+  "processed_artifact_version": "latest",
+  "processed_filename": "processed.csv",
+  "model_artifact_name": "iris_knn_model_prefect",
+  "model_artifact_type": "model"
+}
